@@ -1,4 +1,4 @@
-docker-mmooc-tools
+mmooc-docker-tools
 ==================
 
 Build scripts for the Matematikk-MOOC Tools Docker image.
