@@ -8,31 +8,31 @@ export PGHOST=$DB_PORT_5432_TCP_ADDR
 export PGPORT=$DB_PORT_5432_TCP_PORT
 
 while true; do
-    cmd=(dialog --keep-tite --menu "Select options:" 22 76 16)
+    cmd=(dialog --keep-tite --menu "Your bidding?" 22 76 16)
 
     options=(1 "Error reports"
-             2 "Option 2"
+             2 "Job errors"
              3 "Psql"
-             4 "Option 4")
+             4 "Psql jobs")
 
-    choices=$("${cmd[@]}" "${options[@]}" 2>&1 >/dev/tty)
+    choices=$("${cmd[@]}" "${options[@]}"  2>&1 >/dev/tty)
 
     for choice in $choices
     do
         case $choice in
             1)
-                echo '\x on \\ SELECT message, backtrace FROM error_reports ORDER BY id DESC' | psql canvas_production
-                echo "Press a key"
+                echo '\x on \\ SELECT message, backtrace FROM error_reports ORDER BY id DESC limit 20' | psql canvas_production
                 read
                 ;;
             2)
-                echo "Second Option"
+                echo '\x on \\ SELECT last_error FROM delayed_jobs ORDER BY updated_at DESC' | psql canvas_queue_production
+                read
                 ;;
             3)
                 psql canvas_production
                 ;;
             4)
-                echo "Fourth Option"
+                psql canvas_queue_production
                 ;;
         esac
     done
